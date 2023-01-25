@@ -1,0 +1,25 @@
+Componentes de função --> props
+Componentes de classe --> props, state e ciclo de vida
+
+Os Hooks permites que você trabalhe com state e ciclo de vida numa função
+Os Hooks ciram uma relação de mão dupla entre Componentes de Função e Componentes de Classe. Em outras palavras você pode usar todos os benefícios de uma Classe em uma Função.
+
+Como se identifica um Hook => através de sua sintaxe: useNomeDoHook() => reconhecemos o Hook através da palavra use, por exemplo: useState()
+
+Hooks são funções que permitem a você ligar-se aos recursos de state e ciclo de vida do React a partir de componentes funcionais.
+Hooks não funcionam dentre de classes, eles permitem que você use React sem classes.
+Hooks são completamente opicionais. Você pode experimentar Hooks em alguns componentes sem reescrever nenhum código existente.
+Hooks são 100% retrocompatíveis. Hookks não possuem nenhuma quebra de compatibilidade.
+
+O React nos fornece alguns Hooks básicos => são eles:
+    useState()
+    useEffect()
+    useContext()
+E alguns Hooks adicionais, como:
+    useReducer()
+    useCallback()
+    useMemo()
+    useRef()
+    useImperativeHandle()
+    useLayoutEffect()
+Além disso, o desenvolvedor poderá criar seus próprios Hooks().
