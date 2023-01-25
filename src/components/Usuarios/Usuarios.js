@@ -1,67 +1,56 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import AdicionarUsuario from '../AdicionarUsuario/AdicionarUsuario'
 import Usuario from '../Usuario/Usuario'
 
-class Usuarios extends Component {
+function Usuarios() {
 
-  constructor(props) {
-    super(props)
-    this.state = { usuarios: [] }
+  const [usuarios, setUsuarios] = useState([])
 
-    this.adicionarUsuario = this.adicionarUsuario.bind(this)
+  useEffect(() => {
+    fetch('https://reqres.in/api/users')
+    .then(resposta => resposta.json())
+    .then(dados => {
+      const usuarios = dados.data.map(usuario => ({
+        id: usuario.id,
+        nome: usuario.first_name,
+        sobrenome: usuario.last_name,
+        email: usuario.email
+      }))
+
+      setUsuarios(usuarios)
+    })
+  }, [])  // Usar [] vazio é importante para eveitar loop de renderização ...Em outras palavras passar um array vazio, têm o mesmo efeito do componentDidMount
+
+  const adicionarUsuario = usuario => {
+    setUsuarios(usuariosAtuais => [...usuariosAtuais, usuario])
   }
 
-  adicionarUsuario(usuario) {
-    const usuarios = [...this.state.usuarios, usuario]
-    this.setState({ usuarios: usuarios })
-  }
-
-  removerUsuario(usuario) {  // Método DELETE
+  const removerUsuario = usuario => {
     if (window.confirm(`Tem certeza que deseja remover "${usuario.nome} ${usuario.sobrenome}"?`)) {
       fetch(`https://reqres.in/api/users/${usuario.id}`, {
         method: 'DELETE'
       })
         .then(resposta => {
           if (resposta.ok) {
-            let usuarios = this.state.usuarios
-            usuarios = usuarios.filter(x => x.id !== usuario.id)
-            this.setState({ usuarios: usuarios })
+            setUsuarios(usuarios.filter(x => x.id !== usuario.id))
           }
         })
     }
   }
+  
+  return (
+    <>
+      <AdicionarUsuario adicionarUsuario={adicionarUsuario} />
 
-  componentDidMount() {
-
-    fetch('https://reqres.in/api/users')  // Estamos utilizando fetch para realizar uma requisição GET
-      .then(resposta => resposta.json())  // Para converter para .json
-      .then(dados => {
-        const usuarios = dados.data.map(usuario => ({  // Mapeamento necessário para ajustar com a API que está sendo utilizada
-          id: usuario.id,
-          nome: usuario.first_name,
-          sobrenome: usuario.last_name,
-          email: usuario.email
-        }))
-
-        this.setState({ usuarios })  // Atualização do estado
-      })
-  }
-
-  render() {
-    return (
-      <>
-        <AdicionarUsuario adicionarUsuario={this.adicionarUsuario} />
-
-        {this.state.usuarios.map(usuario => (
-          <Usuario key={usuario.id}
-            usuario={usuario}
-            removerUsuario={this.removerUsuario.bind(this, usuario)}
-          />
-        ))}
-      </>
-    )
-  }
+      {usuarios.map(usuario => (
+        <Usuario key={usuario.id}
+          usuario={usuario}
+          removerUsuario={() => removerUsuario(usuario)}
+        />
+      ))}
+    </>
+  )
 }
 
 export default Usuarios
